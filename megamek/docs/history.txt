@@ -7,6 +7,8 @@ v0.41.15-git
 + Issue #11: RFE: Open MiniMap during Artillery Designate Targets automatically
 + Added BattleValue field to MechcacheCSVTool
 + Data: New Sprites and Unit Fixes.
++ Issue #22: Mech UMUs attacker movement modifier and heat generation
++ Bug [#4683]: EntityWeightClass.getWeightClass doesn't consider SupportVTOL
 
 v0.41.14 (2016-02-02 13:10 UTC)
 + Data New Sprites/Various RAT and Unit Fixes.
