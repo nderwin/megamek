@@ -23,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
@@ -32,7 +31,6 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Vector;
-
 import megamek.client.TimerSingleton;
 import megamek.client.ui.IMegaMekGUI;
 import megamek.client.ui.swing.ButtonOrderPreferences;
@@ -63,7 +61,7 @@ import megamek.server.DedicatedServer;
  */
 public class MegaMek {
 
-    public static String VERSION = "0.41.15-git"; //$NON-NLS-1$
+    public static String VERSION;
     public static long TIMESTAMP = new File(PreferenceManager
             .getClientPreferences().getLogDirectory()
             + File.separator
@@ -75,8 +73,20 @@ public class MegaMek {
     private static final String UNKNOWN_GUI_MESSAGE = "Unknown GUI:"; //$NON-NLS-1$
     private static final String GUI_CLASS_NOT_FOUND_MESSAGE = "Couldn't find the GUI Class:"; //$NON-NLS-1$
     private static final String DEFAULT_LOG_FILE_NAME = "megameklog.txt"; //$NON-NLS-1$
-    private static String PROPERTIES_FILE = "megamek/MegaMek.properties"; //$NON-NLS-1$
-
+    
+    private static final String PROPERTIES_FILE = "megamek/MegaMek.properties"; //$NON-NLS-1$
+    private static final Properties PROPERTIES = new Properties();
+    
+    static {
+        try {
+            PROPERTIES.load(MegaMek.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE));
+        } catch (IOException ex) {
+            MegaMek.displayMessage("Property file load failed."); //$NON-NLS-1$
+        }
+        
+        VERSION = PROPERTIES.getProperty("megamek.version");
+    }
+    
     public static void main(String[] args) {
 
         String logFileName = DEFAULT_LOG_FILE_NAME;
@@ -296,19 +306,8 @@ public class MegaMek {
 
     private static String getGUIClassName(String guiName) {
         assert (guiName != null) : "guiName must be non-null"; //$NON-NLS-1$
-        Properties p = new Properties();
         String key = "gui." + guiName; //$NON-NLS-1$
-        InputStream is = MegaMek.class.getClassLoader().getResourceAsStream(
-                PROPERTIES_FILE);
-        if (is != null) {
-            try {
-                p.load(is);
-                return p.getProperty(key);
-            } catch (IOException e) {
-                MegaMek.displayMessage("Property file load failed."); //$NON-NLS-1$
-            }
-        }
-        return null;
+        return PROPERTIES.getProperty(key);
     }
 
     /**

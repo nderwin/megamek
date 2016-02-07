@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>megamek</groupId>
+    <artifactId>megamek-parent</artifactId>
+    <version>0.41.15-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>MegaMek Parent POM</name>
+
+    <developers>
+        <developer>
+            <name>Ben Mazur</name>
+            <email>bmazur@sev.org</email>
+            <roles>
+                <role>Original author</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Sebastian Brocks</name>
+            <email>beerockxs@users.sourceforge.net</email>
+            <roles>
+                <role>Maintainer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Dave Nawton</name>
+            <email>hammer-gs@users.sourceforge.net</email>
+            <roles>
+                <role>Maintainer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Nicholas Walczak</name>
+            <email>arlith@users.sourceforge.net</email>
+            <roles>
+                <role>Maintainer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Deric "Netzilla" Page</name>
+            <email>dericpage@users.sourceforge.net</email>
+            <roles>
+                <role>Maintainer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Dylan Myers</name>
+            <email>ralgith-erian@users.sourceforge.net</email>
+            <roles>
+                <role>Maintainer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <inceptionYear>2002</inceptionYear>
+    
+    <organization>
+        <name>MegaMek</name>
+        <url>http://www.megamek.info</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License, version 2</name>
+            <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/nderwin/megamek.git</connection>
+        <url>https://github.com/nderwin/megamek</url>
+    </scm>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+    </properties>
+
+    <modules>
+        <module>megamek</module>
+    </modules>
+</project>
