@@ -138,6 +138,7 @@
         
         <plugins>
             <plugin>
+                <!-- copy the data, mmconf, docs directories and the startup.sh script to target-->
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.7</version>
                 <executions>
@@ -207,6 +208,23 @@
                 </executions>
             </plugin>
             <plugin>
+                <!-- Fix the permissions on the startup.sh script, due to the resources plugin breaking it -->
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>make-startup-script-executable</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <target>
+                                <chmod file="target/startup.sh" perm="775" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- Copy the library dependencies to target/lib -->
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.10</version>
                 <executions>
@@ -216,7 +234,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                             <includeScope>runtime</includeScope>
                             <overWriteIfNewer>true</overWriteIfNewer>
                             <overWriteReleases>false</overWriteReleases>
@@ -226,6 +244,7 @@
                 </executions>
             </plugin>
             <plugin>
+                <!-- Create the executable MegaMek.jar file -->
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
@@ -233,32 +252,30 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
             <plugin>
+                <!-- Make a gzipped tarball of the distribution -->
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <formats>
-                        <format>tgz</format>
-                    </formats>
+                    <descriptors>
+                        <descriptor>src/assembly/dist.xml</descriptor>
+                    </descriptors>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
-                <configuration>
-                    <configLocation>config/sun_checks.xml</configLocation>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
 </project>
