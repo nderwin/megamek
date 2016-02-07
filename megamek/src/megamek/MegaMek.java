@@ -61,7 +61,7 @@ import megamek.server.DedicatedServer;
  */
 public class MegaMek {
 
-    public static String VERSION;
+    public static final String VERSION;
     public static long TIMESTAMP = new File(PreferenceManager
             .getClientPreferences().getLogDirectory()
             + File.separator
