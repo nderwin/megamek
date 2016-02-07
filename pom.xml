@@ -208,22 +208,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <!-- Fix the permissions on the startup.sh script, due to the resources plugin breaking it -->
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>make-startup-script-executable</id>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <target>
-                                <chmod file="target/startup.sh" perm="775" />
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <!-- Copy the library dependencies to target/lib -->
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.10</version>
@@ -253,15 +237,53 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>megamek.MegaMek</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <!-- Fix the permissions on the startup.sh script, due to the resources plugin breaking it -->
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <configuration>
+                    <failOnError>true</failOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-startup-script-executable</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <chmod file="target/startup.sh" perm="775" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-equipment-list</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <java jar="target/MegaMek.jar" fork="true">
+                                    <arg line="-eqdb target/docs/equipment.txt" />
+                                </java>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <!-- Make a gzipped tarball of the distribution -->
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
+                    <tarLongFileMode>gnu</tarLongFileMode>
                     <descriptors>
                         <descriptor>src/assembly/dist.xml</descriptor>
                     </descriptors>
