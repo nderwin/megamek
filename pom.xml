@@ -75,9 +75,15 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.debug>true</maven.compiler.debug>
+        <maven.compiler.debuglevel>lines,source</maven.compiler.debuglevel>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.meminitial>512m</maven.compiler.meminitial>
+        <maven.compiler.maxmem>512m</maven.compiler.maxmem>
+        <maven.compiler.fork>true</maven.compiler.fork>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+        <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
     </properties>
 
     <modules>
@@ -117,6 +123,7 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
+                            <skip>true</skip>
                             <configLocation>checkstyle.xml</configLocation>
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>

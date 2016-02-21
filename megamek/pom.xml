@@ -72,33 +72,81 @@
         
         <plugins>
             <plugin>
+                <!-- Copy the library dependencies to target/lib -->
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <includeScope>runtime</includeScope>
+                    <overWriteIfNewer>true</overWriteIfNewer>
+                    <overWriteReleases>false</overWriteReleases>
+                    <overWriteSnapshots>false</overWriteSnapshots>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-Mac-dependencies</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}.app/Contents/Resources/Java/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <!-- copy the data, mmconf, docs directories and the startup.sh script to target-->
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.7</version>
                 <executions>
                     <execution>
                         <id>copy-data</id>
-                        <phase>validate</phase>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/data</outputDirectory>
+                            <outputDirectory>${project.build.directory}/data</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>data</directory>
+                                    <excludes>
+                                        <exclude>**/*.psd</exclude>
+                                        <exclude>mechfiles/battlearmor/**</exclude>
+                                        <exclude>mechfiles/convfighter/**</exclude>
+                                        <exclude>mechfiles/dropships/**</exclude>
+                                        <exclude>mechfiles/fighters/**</exclude>
+                                        <exclude>mechfiles/ge/**</exclude>
+                                        <exclude>mechfiles/infantry/**</exclude>
+                                        <exclude>mechfiles/jumpships/**</exclude>
+                                        <exclude>mechfiles/mechs/**</exclude>
+                                        <exclude>mechfiles/protomechs/**</exclude>
+                                        <exclude>mechfiles/smallcraft/**</exclude>
+                                        <exclude>mechfiles/spacestation/**</exclude>
+                                        <exclude>mechfiles/unofficial/**</exclude>
+                                        <exclude>mechfiles/vehicles/**</exclude>
+                                        <exclude>mechfiles/warship/**</exclude>
+                                    </excludes>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
                     <execution>
                         <id>copy-mmconf</id>
-                        <phase>validate</phase>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/mmconf</outputDirectory>
+                            <outputDirectory>${project.build.directory}/mmconf</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>mmconf</directory>
@@ -108,12 +156,12 @@
                     </execution>
                     <execution>
                         <id>copy-docs</id>
-                        <phase>validate</phase>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/docs</outputDirectory>
+                            <outputDirectory>${project.build.directory}/docs</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>docs</directory>
@@ -122,13 +170,46 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-startup</id>
-                        <phase>validate</phase>
+                        <id>copy-mac-data</id>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target</outputDirectory>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}.app</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>packaging_utils/${project.build.finalName}.app</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-JavaApplicationStub</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}.app/Contents/MacOS</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>packaging_utils</directory>
+                                    <includes>
+                                        <include>JavaApplicationStub</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-startup</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}</directory>
@@ -142,33 +223,12 @@
                 </executions>
             </plugin>
             <plugin>
-                <!-- Copy the library dependencies to target/lib -->
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.10</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <includeScope>runtime</includeScope>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <!-- Create the executable MegaMek.jar file -->
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
                     <archive>
                         <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>megamek.MegaMek</mainClass>
@@ -177,7 +237,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <!-- Fix the permissions on the startup.sh script, due to the resources plugin breaking it -->
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
                 <configuration>
@@ -185,14 +244,52 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>make-startup-script-executable</id>
-                        <phase>package</phase>
+                        <id>create-logs-directory</id>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
                             <target>
-                                <chmod file="target/startup.sh" perm="775" />
+                                <mkdir dir="${project.build.directory}/logs" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>unit-file-zip</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target name="unitfiles-zip" description="Create a zipfile of the Mech datafiles">
+                                <zip zipfile="${project.build.directory}/data/mechfiles/battlearmor.zip" basedir="${basedir}/data/mechfiles/battlearmor"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/convfighter.zip" basedir="${basedir}/data/mechfiles/convfighter"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/dropships.zip" basedir="${basedir}/data/mechfiles/dropships"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/fighters.zip" basedir="${basedir}/data/mechfiles/fighters"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/ge.zip" basedir="${basedir}/data/mechfiles/ge"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/infantry.zip" basedir="${basedir}/data/mechfiles/infantry"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/jumpships.zip" basedir="${basedir}/data/mechfiles/jumpships"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/mechs.zip" basedir="${basedir}/data/mechfiles/mechs"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/protomechs.zip" basedir="${basedir}/data/mechfiles/protomechs"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/smallcraft.zip" basedir="${basedir}/data/mechfiles/smallcraft"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/spacestation.zip" basedir="${basedir}/data/mechfiles/spacestation"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/unofficial.zip" basedir="${basedir}/data/mechfiles/unofficial"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/vehicles.zip" basedir="${basedir}/data/mechfiles/vehicles"/>
+                                <zip zipfile="${project.build.directory}/data/mechfiles/warship.zip" basedir="${basedir}/data/mechfiles/warship"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- Fix the permissions on the startup.sh script, due to the resources plugin breaking it -->
+                        <id>make-startup-script-executable</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <chmod file="${project.build.directory}/startup.sh" perm="775" />
                             </target>
                         </configuration>
                     </execution>
@@ -204,28 +301,91 @@
                         </goals>
                         <configuration>
                             <target>
-                                <java jar="target/MegaMek.jar" fork="true">
-                                    <arg line="-eqdb target/docs/equipment.txt" />
+                                <java jar="${project.build.directory}/${project.build.finalName}.${project.packaging}" fork="true">
+                                    <arg line="-eqdb ${project.build.directory}/docs/equipment.txt" />
                                 </java>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-official-unit-list</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <java jar="${project.build.directory}/${project.build.finalName}.${project.packaging}" fork="true">
+                                    <arg line="-oul" />
+                                </java>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-jar-for-mac</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${project.build.directory}/${project.build.finalName}.${project.packaging}" toFile="${project.build.directory}/${project.build.finalName}.app/Contents/Resources/Java/${project.build.finalName}.${project.packaging}" />
                             </target>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-                <!-- Make a gzipped tarball of the distribution -->
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>1.7.8</version>
+                <executions>
+                    <execution>
+                        <id>exe</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <jar>${project.build.directory}/${project.build.finalName}.${project.packaging}</jar>
+                            <outfile>${project.build.directory}/${project.build.finalName}.exe</outfile>
+                            <errTitle></errTitle>
+                            <cmdLine></cmdLine>
+                            <chdir>.</chdir>
+                            <priority>normal</priority>
+                            <downloadUrl>http://java.com/download</downloadUrl>
+                            <supportUrl>http://megamek.sourceforge.net/forums</supportUrl>
+                            <customProcName>true</customProcName>
+                            <stayAlive>false</stayAlive>
+                            <icon>${basedir}/data/images/misc/megamek.ico</icon>
+                            <jre>
+                                <minVersion>1.7.0</minVersion>
+                                <jdkPreference>preferJre</jdkPreference>
+                                <maxHeapSize>1024</maxHeapSize>
+                            </jre>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- Make the distribution files -->
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
+                    <finalName>${project.groupId}-v${project.version}</finalName>
                     <tarLongFileMode>gnu</tarLongFileMode>
                     <descriptors>
-                        <descriptor>src/assembly/dist.xml</descriptor>
+                        <descriptor>src/assembly/nix.xml</descriptor>
+                        <descriptor>src/assembly/mac.xml</descriptor>
+                        <descriptor>src/assembly/win.xml</descriptor>
                     </descriptors>
+                    <attach>false</attach>
                 </configuration>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
