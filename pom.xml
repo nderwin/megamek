@@ -123,7 +123,6 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
-                            <skip>true</skip>
                             <configLocation>checkstyle.xml</configLocation>
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>
