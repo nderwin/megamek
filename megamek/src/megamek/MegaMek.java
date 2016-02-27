@@ -409,6 +409,7 @@ public class MegaMek {
         private static final String OPTION_UNIT_EXPORT = "export"; //$NON-NLS-1$
         private static final String OPTION_OFFICAL_UNIT_LIST = "oul"; //$NON-NLS-1$
         private static final String OPTION_UNIT_BATTLEFORCE_CONVERSION = "bfc"; //$NON-NLS-1$
+        private static final String OPTION_DATADIR = "data"; //$NON-NLS-1$
 
         public CommandLineParser(String[] args) {
             super(args);
@@ -472,7 +473,11 @@ public class MegaMek {
                 nextToken();
                 processExtendedEquipmentDb();
             }
-
+            if ((getToken() == TOK_OPTION)
+                    && getTokenValue().equals(OPTION_DATADIR)) {
+                nextToken();
+                processDataDir();
+            }
             if ((getToken() == TOK_OPTION)
                     && getTokenValue().equals(OPTION_UNIT_VALIDATOR)) {
                 nextToken();
@@ -557,6 +562,17 @@ public class MegaMek {
             System.exit(0);
         }
 
+        private void processDataDir() throws ParseException {
+            String dataDirName;
+            if (getToken() == TOK_LITERAL) {
+                dataDirName = getTokenValue();
+                nextToken();
+                Configuration.setDataDir(new File(dataDirName));
+            } else {
+                error("directory name expected"); // $NON-NLS-1$
+            }
+        }
+        
         private void processUnitValidator() throws ParseException {
             String filename;
             if (getToken() == TOK_LITERAL) {
