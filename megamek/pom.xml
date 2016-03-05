@@ -13,26 +13,11 @@
 
     <name>MegaMek</name>
 
-    <repositories>
-        <!-- TinyXML is not in Maven Central -->
-        <repository>
-            <id>project.local</id>
-            <name>project</name>
-            <url>file:${basedir}/repo</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
             <version>1.4.7</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>gd.xml</groupId>
-            <artifactId>tinyxml</artifactId>
-            <version>0.7</version>
             <type>jar</type>
         </dependency>
         <dependency>
