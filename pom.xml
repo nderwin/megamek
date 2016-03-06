@@ -75,7 +75,6 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- The ant build sets up debugging information like this, but we need even more details for jacoco -->
         <maven.compiler.debug>true</maven.compiler.debug>
         <maven.compiler.debuglevel>lines,source</maven.compiler.debuglevel>
         <maven.compiler.source>1.7</maven.compiler.source>
