@@ -15,12 +15,10 @@
 
 package megamek;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -31,6 +29,12 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 import megamek.client.TimerSingleton;
 import megamek.client.ui.IMegaMekGUI;
 import megamek.client.ui.swing.ButtonOrderPreferences;
@@ -46,6 +50,8 @@ import megamek.common.MechSummaryCache;
 import megamek.common.MechView;
 import megamek.common.Tank;
 import megamek.common.TechConstants;
+import megamek.common.logging.LoggingOutputStream;
+import megamek.common.logging.StdOutErrLevel;
 import megamek.common.preference.PreferenceManager;
 import megamek.common.util.AbstractCommandLineParser;
 import megamek.common.verifier.EntityVerifier;
@@ -66,6 +72,8 @@ public class MegaMek {
             .getClientPreferences().getLogDirectory()
             + File.separator
             + "timestamp").lastModified(); //$NON-NLS-1$
+    
+    private static final Logger LOG = Logger.getLogger(MegaMek.class.getName());
 
     private static final NumberFormat commafy = NumberFormat.getInstance();
     private static final String INCORRECT_ARGUMENTS_MESSAGE = "Incorrect arguments:"; //$NON-NLS-1$
@@ -211,29 +219,21 @@ public class MegaMek {
      *            The file name to redirect to.
      */
     private static void redirectOutput(String logFileName) {
+            
         try {
-            System.out.println("Redirecting output to " + logFileName); //$NON-NLS-1$
             String sLogDir = PreferenceManager.getClientPreferences()
                     .getLogDirectory();
-            File logDir = new File(sLogDir);
-            if (!logDir.exists()) {
-                logDir.mkdir();
-            }
-            PrintStream ps = new PrintStream(
-                    new BufferedOutputStream(new FileOutputStream(sLogDir
-                            + File.separator + logFileName) {
-                        @Override
-                        public void flush() throws IOException {
-                            super.flush();
-                            getFD().sync();
-                        };
-                    }
-                            , 64));
-            System.setOut(ps);
-            System.setErr(ps);
-        } catch (Exception e) {
-            System.err.println("Unable to redirect output to " + logFileName); //$NON-NLS-1$
-            e.printStackTrace();
+
+            Handler handler = new FileHandler(sLogDir + File.separator + logFileName);
+            handler.setFormatter(new SimpleFormatter());
+            Logger.getLogger("").addHandler(handler);
+            
+            Logger stdout = Logger.getLogger("stdout");
+            Logger stderr = Logger.getLogger("stderr");
+            System.setOut(new PrintStream(new LoggingOutputStream(stdout, StdOutErrLevel.STDOUT)));
+            System.setErr(new PrintStream(new LoggingOutputStream(stderr, StdOutErrLevel.STDERR)));
+        } catch (IOException | SecurityException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
