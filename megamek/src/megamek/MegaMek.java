@@ -32,6 +32,7 @@ import java.util.Vector;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -89,7 +90,7 @@ public class MegaMek {
         try {
             PROPERTIES.load(MegaMek.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE));
         } catch (IOException ex) {
-            MegaMek.displayMessage("Property file load failed."); //$NON-NLS-1$
+            LOG.log(Level.WARNING, "Property file load failed.", ex); //$NON-NLS-1$
         }
         
         VERSION = PROPERTIES.getProperty("megamek.version");
@@ -151,7 +152,6 @@ public class MegaMek {
     public static String getMegaMekSHA256() {
         StringBuilder sb = new StringBuilder();
         byte[] buffer = new byte[8192];
-        DigestInputStream in = null;
 
         // Assume UNIX/Linux, which has the jar in the root folder
         String filename = "MegaMek.jar";
@@ -163,10 +163,16 @@ public class MegaMek {
             filename = "MegaMek.app/Contents/Resources/Java/"+filename;
         }
 
-        // Calculate the digest for the given file.
+        MessageDigest md;
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            in = new DigestInputStream(new FileInputStream(filename), md);
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage(), ex);
+            return null;
+        }
+
+        // Calculate the digest for the given file.
+        try (DigestInputStream in = new DigestInputStream(new FileInputStream(filename), md)) {
             while (0 < in.read(buffer)) {}
             // gets digest
             byte[] digest = md.digest();
@@ -175,26 +181,13 @@ public class MegaMek {
                 sb.append(String.format("%02x", d));
             }
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage(), e);
             return null;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage(), e);
             return null;
-        } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return null;
-            }
         }
+
         return sb.toString();
     }
 
@@ -224,14 +217,19 @@ public class MegaMek {
             String sLogDir = PreferenceManager.getClientPreferences()
                     .getLogDirectory();
 
+            LogManager logManager = LogManager.getLogManager();
+            logManager.reset();
+            logManager.readConfiguration(MegaMek.class.getResourceAsStream("logging.properties"));
+            
             Handler handler = new FileHandler(sLogDir + File.separator + logFileName);
             handler.setFormatter(new SimpleFormatter());
             Logger.getLogger("").addHandler(handler);
             
             Logger stdout = Logger.getLogger("stdout");
+            System.setOut(new PrintStream(new LoggingOutputStream(stdout, StdOutErrLevel.STDOUT), true));
+
             Logger stderr = Logger.getLogger("stderr");
-            System.setOut(new PrintStream(new LoggingOutputStream(stdout, StdOutErrLevel.STDOUT)));
-            System.setErr(new PrintStream(new LoggingOutputStream(stderr, StdOutErrLevel.STDERR)));
+            System.setErr(new PrintStream(new LoggingOutputStream(stderr, StdOutErrLevel.STDERR), true));
         } catch (IOException | SecurityException ex) {
             LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
@@ -248,7 +246,7 @@ public class MegaMek {
     private static void startDedicatedServer(String[] args) {
         StringBuffer message = new StringBuffer("Starting Dedicated Server. "); //$NON-NLS-1$
         MegaMek.dumpArgs(message, args);
-        MegaMek.displayMessage(message.toString());
+        LOG.info(message.toString());
         DedicatedServer.start(args);
     }
 
@@ -271,7 +269,7 @@ public class MegaMek {
             StringBuffer message = new StringBuffer("Starting GUI "); //$NON-NLS-1$
             message.append(guiName).append(". "); //$NON-NLS-1$
             MegaMek.dumpArgs(message, args);
-            MegaMek.displayMessage(message.toString());
+            LOG.info(message.toString());
             mainGui.start(args);
         }
     }
@@ -297,8 +295,7 @@ public class MegaMek {
                     return result;
                 }
             } catch (Exception e) {
-                MegaMek.displayMessage(GUI_CLASS_NOT_FOUND_MESSAGE
-                        + guiClassName);
+                LOG.log(Level.SEVERE, GUI_CLASS_NOT_FOUND_MESSAGE + guiClassName, e);
             }
         }
         return null;
@@ -339,19 +336,9 @@ public class MegaMek {
      *            the message to be displayed.
      */
     private static void displayMessageAndExit(String message) {
-        MegaMek.displayMessage(message);
+        LOG.info(message);
         TimerSingleton.getInstance().killTimer();
         System.exit(1);
-    }
-
-    /**
-     * Prints the message and flushes the output stream.
-     *
-     * @param message
-     */
-    private static void displayMessage(String message) {
-        System.out.println(message);
-        System.out.flush();
     }
 
     /**
@@ -360,23 +347,18 @@ public class MegaMek {
      */
     private static void showInfo() {
         // echo some useful stuff
-        System.out.println("Starting MegaMek v" + VERSION + " ..."); //$NON-NLS-1$ //$NON-NLS-2$
-        System.out.println("Compiled on " + new Date(TIMESTAMP).toString()); //$NON-NLS-1$
-        System.out.println("Today is " + new Date().toString()); //$NON-NLS-1$
-        System.out.println("Java vendor " + System.getProperty("java.vendor")); //$NON-NLS-1$ //$NON-NLS-2$
-        System.out
-                .println("Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
-        System.out.println("Platform " //$NON-NLS-1$
-                + System.getProperty("os.name") //$NON-NLS-1$
-                + " " //$NON-NLS-1$
-                + System.getProperty("os.version") //$NON-NLS-1$
-                + " (" //$NON-NLS-1$
-                + System.getProperty("os.arch") //$NON-NLS-1$
-                + ")"); //$NON-NLS-1$
+        LOG.log(Level.INFO, "Starting MegaMek v{0} ...", VERSION); //$NON-NLS-1$
+        LOG.log(Level.INFO, "Compiled on {0}", new Date(TIMESTAMP).toString()); //$NON-NLS-1$
+        LOG.log(Level.INFO, "Today is {0}", new Date().toString()); //$NON-NLS-1$
+        LOG.log(Level.INFO, "Java vendor {0}", System.getProperty("java.vendor")); //$NON-NLS-1$ //$NON-NLS-2$
+        LOG.log(Level.INFO, "Java version {0}", System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
+        LOG.log(Level.INFO, "Platform {0} {1} ({2})", new Object[]{ //$NON-NLS-1$ 
+            System.getProperty("os.name") //$NON-NLS-1$
+            , System.getProperty("os.version") //$NON-NLS-1$
+            , System.getProperty("os.arch") //$NON-NLS-1$
+        });
         long maxMemory = Runtime.getRuntime().maxMemory() / 1024;
-        System.out
-                .println("Total memory available to MegaMek: " + MegaMek.commafy.format(maxMemory) + " kB"); //$NON-NLS-1$ //$NON-NLS-2$
-        System.out.println();
+        LOG.log(Level.INFO, "Total memory available to MegaMek: {0} kB", MegaMek.commafy.format(maxMemory)); //$NON-NLS-1$
     }
 
     /**
@@ -595,15 +577,12 @@ public class MegaMek {
                 }
 
                 if (ms == null) {
-                    System.err
-                            .println(filename
-                                    + " not found try using \"chassis model\" for input."); //$NON-NLS-1$
+                    LOG.log(Level.WARNING, "{0} not found try using \"chassis model\" for input.", filename); //$NON-NLS-1$
                 } else {
                     try {
                         Entity entity = new MechFileParser(ms.getSourceFile(),
                                 ms.getEntryName()).getEntity();
-                        System.err
-                                .println("Validating Entity: " + entity.getShortNameRaw()); //$NON-NLS-1$
+                        LOG.log(Level.INFO, "Validating Entity: {0}", entity.getShortNameRaw()); //$NON-NLS-1$
                         EntityVerifier entityVerifier = EntityVerifier.getInstance(
                                 new File(Configuration.unitsDir(),
                                         EntityVerifier.CONFIG_FILENAME));
@@ -654,13 +633,11 @@ public class MegaMek {
                                 testEntity.correctEntity(sb);
                             }
                         }
-                        System.err.println(sb.toString());
+                        LOG.info(sb.toString());
                     } catch (Exception ex) {
-                        // ex.printStackTrace();
                         error("\"chassis model\" expected as input"); //$NON-NLS-1$
                     }
                 }
-
             } else {
                 error("\"chassis model\" expected as input"); //$NON-NLS-1$
             }
@@ -732,7 +709,7 @@ public class MegaMek {
                     }
                     w.close();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOG.log(Level.SEVERE, ex.getMessage(), ex);
                 }
             }
 
@@ -833,7 +810,7 @@ public class MegaMek {
                     }
                     w.close();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOG.log(Level.SEVERE, ex.getMessage(), ex);
                 }
             }
 
