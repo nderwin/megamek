@@ -4,7 +4,7 @@
 
     <groupId>megamek</groupId>
     <artifactId>megamek-parent</artifactId>
-    <version>0.41.16-SNAPSHOT</version>
+    <version>0.41.18-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>MegaMek Parent POM</name>
