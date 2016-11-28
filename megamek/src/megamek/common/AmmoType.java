@@ -390,6 +390,16 @@ public class AmmoType extends EquipmentType {
                 .getRackSize()));
     }
 
+    @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = ammoType;
+		result = prime * result
+				+ ((flags == null) ? 0 : flags.hashCode());
+		result = prime * result + rackSize;
+		return result;
+	}
+
     public int getAmmoType() {
         return ammoType;
     }
@@ -6191,6 +6201,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 3;
         ammo.ammoType = AmmoType.T_ATM;
         ammo.munitionType = M_EXTENDED_RANGE;
+        ammo.subMunitionBegin = 6;
+        ammo.subMunitionLength = 2;
         ammo.shots = 20;
         ammo.bv = 14;
         ammo.cost = 75000;
@@ -6218,6 +6230,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 3;
         ammo.ammoType = AmmoType.T_ATM;
         ammo.munitionType = M_HIGH_EXPLOSIVE;
+        ammo.subMunitionBegin = 6;
+        ammo.subMunitionLength = 2;
         ammo.shots = 20;
         ammo.bv = 14;
         ammo.cost = 75000;
@@ -6269,6 +6283,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 6;
         ammo.ammoType = AmmoType.T_ATM;
         ammo.munitionType = M_EXTENDED_RANGE;
+        ammo.subMunitionBegin = 6;
+        ammo.subMunitionLength = 2;
         ammo.shots = 10;
         ammo.bv = 26;
         ammo.cost = 75000;
@@ -6296,6 +6312,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 6;
         ammo.ammoType = AmmoType.T_ATM;
         ammo.munitionType = M_HIGH_EXPLOSIVE;
+        ammo.subMunitionBegin = 6;
+        ammo.subMunitionLength = 2;
         ammo.shots = 10;
         ammo.bv = 26;
         ammo.cost = 75000;
@@ -6347,6 +6365,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 9;
         ammo.ammoType = AmmoType.T_ATM;
         ammo.munitionType = M_EXTENDED_RANGE;
+        ammo.subMunitionBegin = 6;
+        ammo.subMunitionLength = 2;
         ammo.shots = 7;
         ammo.bv = 36;
         ammo.cost = 75000;
@@ -6374,6 +6394,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 9;
         ammo.ammoType = AmmoType.T_ATM;
         ammo.munitionType = M_HIGH_EXPLOSIVE;
+        ammo.subMunitionBegin = 6;
+        ammo.subMunitionLength = 2;
         ammo.shots = 7;
         ammo.bv = 36;
         ammo.cost = 75000;
@@ -6425,6 +6447,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 12;
         ammo.ammoType = AmmoType.T_ATM;
         ammo.munitionType = M_EXTENDED_RANGE;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 2;
         ammo.shots = 5;
         ammo.bv = 52;
         ammo.cost = 75000;
@@ -6452,6 +6476,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 12;
         ammo.ammoType = AmmoType.T_ATM;
         ammo.munitionType = M_HIGH_EXPLOSIVE;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 2;
         ammo.shots = 5;
         ammo.bv = 52;
         ammo.cost = 75000;
@@ -6502,6 +6528,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 3;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_EXTENDED_RANGE;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 2;
         ammo.shots = 20;
         ammo.bv = 21;
         ammo.cost = 75000;
@@ -6528,6 +6556,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 3;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_HIGH_EXPLOSIVE;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 2;
         ammo.shots = 20;
         ammo.bv = 21;
         ammo.cost = 75000;
@@ -6555,6 +6585,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 3;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_IATM_IIW;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 3;
         ammo.shots = 20;
         ammo.bv = 27; // 21 * 1.3 = 27.3, round down (?)
         ammo.cost = 75000;
@@ -6582,6 +6614,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 3;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_IATM_IMP;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 3;
         ammo.shots = 20;
         ammo.bv = 42; // 21 * 2 = 42
         ammo.cost = 75000;
@@ -6633,6 +6667,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 6;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_EXTENDED_RANGE;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 2;
         ammo.shots = 10;
         ammo.bv = 39;
         ammo.cost = 75000;
@@ -6659,6 +6695,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 6;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_HIGH_EXPLOSIVE;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 2;
         ammo.shots = 10;
         ammo.bv = 39;
         ammo.cost = 75000;
@@ -6686,6 +6724,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 6;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_IATM_IIW;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 3;
         ammo.shots = 10;
         ammo.bv = 51; // 50.7 round up (?)
         ammo.cost = 75000;
@@ -6713,6 +6753,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 6;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_IATM_IMP;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 3;
         ammo.shots = 10;
         ammo.bv = 78; // 39 * 2 = 78
         ammo.cost = 75000;
@@ -6764,6 +6806,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 9;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_EXTENDED_RANGE;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 2;
         ammo.shots = 7;
         ammo.bv = 54;
         ammo.cost = 75000;
@@ -6790,6 +6834,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 9;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_HIGH_EXPLOSIVE;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 2;
         ammo.shots = 7;
         ammo.bv = 54;
         ammo.cost = 75000;
@@ -6817,6 +6863,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 9;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_IATM_IIW;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 3;
         ammo.shots = 7;
         ammo.bv = 70; // 54 * 1.3 = 70.2, round down (?)
         ammo.cost = 75000;
@@ -6844,6 +6892,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 9;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_IATM_IMP;
+        ammo.subMunitionBegin = 7;
+        ammo.subMunitionLength = 3;
         ammo.shots = 7;
         ammo.bv = 108; // 54 * 2 = 108
         ammo.cost = 75000;
@@ -6895,6 +6945,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 12;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_EXTENDED_RANGE;
+        ammo.subMunitionBegin = 8;
+        ammo.subMunitionLength = 2;
         ammo.shots = 5;
         ammo.bv = 78;
         ammo.cost = 75000;
@@ -6921,6 +6973,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 12;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_HIGH_EXPLOSIVE;
+        ammo.subMunitionBegin = 8;
+        ammo.subMunitionLength = 2;
         ammo.shots = 5;
         ammo.bv = 78;
         ammo.cost = 75000;
@@ -6948,6 +7002,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 12;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_IATM_IIW;
+        ammo.subMunitionBegin = 8;
+        ammo.subMunitionLength = 3;
         ammo.shots = 5;
         ammo.bv = 101; // 78 * 1.3 = 101.4, round down (?)
         ammo.cost = 75000;
@@ -6975,6 +7031,8 @@ public class AmmoType extends EquipmentType {
         ammo.rackSize = 12;
         ammo.ammoType = AmmoType.T_IATM;
         ammo.munitionType = M_IATM_IMP;
+        ammo.subMunitionBegin = 8;
+        ammo.subMunitionLength = 3;
         ammo.shots = 5;
         ammo.bv = 156; // 78 * 2 = 156
         ammo.cost = 75000;
@@ -7679,6 +7737,7 @@ public class AmmoType extends EquipmentType {
         ammo.shortName = "Proto AC/2";
         ammo.setInternalName("Clan ProtoMech AC/2 Ammo");
         ammo.addLookupName("CLProtoAC2Ammo");
+        ammo.addLookupName("CLProtoAC2 Ammo");
         ammo.damagePerShot = 2;
         ammo.rackSize = 2;
         ammo.ammoType = AmmoType.T_PAC;
@@ -7703,6 +7762,7 @@ public class AmmoType extends EquipmentType {
         ammo.shortName = "Proto AC/4";
         ammo.setInternalName("Clan ProtoMech AC/4 Ammo");
         ammo.addLookupName("CLProtoAC4Ammo");
+        ammo.addLookupName("CLProtoAC4 Ammo");
         ammo.damagePerShot = 4;
         ammo.rackSize = 4;
         ammo.ammoType = AmmoType.T_PAC;
@@ -7727,6 +7787,7 @@ public class AmmoType extends EquipmentType {
         ammo.shortName = "Proto AC/8";
         ammo.setInternalName("Clan ProtoMech AC/8 Ammo");
         ammo.addLookupName("CLProtoAC8Ammo");
+        ammo.addLookupName("CLProtoAC8 Ammo");
         ammo.damagePerShot = 8;
         ammo.rackSize = 8;
         ammo.ammoType = AmmoType.T_PAC;
@@ -11853,6 +11914,7 @@ public class AmmoType extends EquipmentType {
         ammo.shortName = "Light Rifle";
         ammo.setInternalName("IS Ammo Light Rifle");
         ammo.addLookupName("ISLight Rifle Ammo");
+        ammo.addLookupName("ISLightRifle Ammo");
         ammo.damagePerShot = 1;
         ammo.rackSize = 3;
         ammo.ammoType = AmmoType.T_RIFLE;
@@ -11877,6 +11939,7 @@ public class AmmoType extends EquipmentType {
         ammo.shortName = "Medium Rifle";
         ammo.setInternalName("IS Ammo Medium Rifle");
         ammo.addLookupName("ISMedium Rifle Ammo");
+        ammo.addLookupName("ISMediumRifle Ammo");
         ammo.damagePerShot = 1;
         ammo.rackSize = 6;
         ammo.ammoType = AmmoType.T_RIFLE;
@@ -11901,6 +11964,7 @@ public class AmmoType extends EquipmentType {
         ammo.shortName = "Heavy Rifle";
         ammo.setInternalName("IS Ammo Heavy Rifle");
         ammo.addLookupName("ISHeavy Rifle Ammo");
+        ammo.addLookupName("ISHeavyRifle Ammo");
         ammo.damagePerShot = 1;
         ammo.rackSize = 9;
         ammo.ammoType = AmmoType.T_RIFLE;
